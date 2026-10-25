@@ -10,8 +10,23 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: "8.9" }
       - run: unzip -q Mirrox-v5-theme-fixed.zip -d proj
-      - run: ls proj
       - run: gradle assembleDebug --no-daemon
         working-directory: proj
       - uses: actions/upload-artifact@v4
         with: { name: Mirrox-debug-apk, path: proj/app/build/outputs/apk/debug/app-debug.apk }
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: unzip -q Mirrox-v5-theme-fixed.zip -d proj
+        shell: bash
+      - run: pip install -r requirements.txt pyinstaller
+        working-directory: proj/windows
+      - run: python -m unittest discover -p "test_*.py"
+        working-directory: proj/windows
+      - run: pyinstaller --onefile --noconsole --name MirroxPC --collect-all zeroconf --collect-all qrcode --collect-all cryptography --collect-all av mirrox_pc.py
+        working-directory: proj/windows
+      - uses: actions/upload-artifact@v4
+        with: { name: MirroxPC-windows, path: proj/windows/dist/MirroxPC.exe }
