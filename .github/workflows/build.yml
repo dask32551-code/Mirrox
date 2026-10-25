@@ -9,7 +9,8 @@ jobs:
         with: { distribution: temurin, java-version: 17 }
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: "8.9" }
-      - run: unzip -q Mirrox-v5-theme.zip -d proj
+      - run: unzip -q Mirrox-v5-theme-fixed.zip -d proj
+      - run: ls proj
       - run: gradle assembleDebug --no-daemon
         working-directory: proj
       - uses: actions/upload-artifact@v4
